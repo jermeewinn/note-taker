@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const { notes } = require('./Develop/db/db.json');
+const uuid = require('./helpers/uuid');
 const PORT = process.env.PORT || 3001;
 const app = express();
 // Navigate here in your browser to test the server: http://localhost:3001
@@ -15,23 +16,29 @@ app.use(express.json());
 
 // This route reads ALL data coming from db.json
 app.get('/api/notes', (req, res) => {
-    fs.readFile('./Develop/db/db.json', 'utf8', function(err, data) {
-        res.send(data)
-    }); 
+    const data = fs.readFileSync('./Develop/db/db.json', 'utf8')
+        res.send(data);
+        console.log(data);
 });
-// This route reads individual notes that are singularly pulled from db.json
-app.get('/api/notes', (req, res) => {
-    res.send('./Develop/db/db.json', 'utf8', function())
-})
+
 // This route allows user to create notes in db.json
 app.post('/api/notes', (req, res) => {
-    fs.writeFile(`./Develop/db/db.json`, JSON.stringify(newNotes), (err) => err)
-})
-
+    const data = fs.writeFileSync(`./Develop/db/db.json`, 'utf8')
+        res.send(data);
+        console.log(data)
+});
+// This route allows user to delete notes in db.json
+app.delete('/'
+)
+// This route allows us to load in our notes from db.json
+app.get('/api/notes', (req, res) => {
+    res.sendFile(path.join(__dirname, './Develop/db/db.json'));
+});
+// This route allows us to load in our notes collected from db.json.
 app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, './public/notes.html'));
 });
-
+// This route is more for everything else. Seeing that index.html only acts as a landing page, this will apply here.
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'));
 });
