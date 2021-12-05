@@ -23,9 +23,29 @@ app.get('/api/notes', (req, res) => {
 
 // This route allows user to create notes in db.json
 app.post('/api/notes', (req, res) => {
-    const data = fs.writeFileSync(`./Develop/db/db.json`, 'utf8')
-        res.send(data);
-        console.log(data)
+    console.info(`${req.method} request received to add a note`);
+    const { title,text } = req.body;
+    if (title && text) {
+        const newNote = {
+            title,
+            text,
+            noteId: uuid(),
+        };
+
+        fs.readFileSync('./Develop/db/db.json', 'utf8');
+            const parsedNotes = JSON.parse(notes);
+            parsedNotes.push(newNote);
+            fs.writeFileSync('./Develop/db/db.json', JSON.stringify(parsedNotes));
+        const response = {
+            status: 'success',
+            body: newNote,
+        };
+        
+        console.log(response);
+        res.json(response);
+    } else {
+        res.json('Error in creating new note');
+    }     
 });
 // This route allows user to delete notes in db.json
 app.delete('/'
