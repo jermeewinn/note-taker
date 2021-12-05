@@ -13,7 +13,14 @@ app.use(express.urlencoded({ extended: true }));
 // This allows us to parse incoming JSON data
 app.use(express.json());
 
-
+// This route allows us to load in our notes from db.json
+app.get('/api/notes', (req, res) => {
+    res.sendFile(path.join(__dirname, './Develop/db/db.json'));
+});
+// This route allows us to load in our notes collected from db.json.
+app.get('/notes', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/notes.html'));
+});
 // This route reads ALL data coming from db.json
 app.get('/api/notes', (req, res) => {
     const data = fs.readFileSync('./Develop/db/db.json', 'utf8')
@@ -50,14 +57,7 @@ app.post('/api/notes', (req, res) => {
 // This route allows user to delete notes in db.json
 app.delete('/'
 )
-// This route allows us to load in our notes from db.json
-app.get('/api/notes', (req, res) => {
-    res.sendFile(path.join(__dirname, './Develop/db/db.json'));
-});
-// This route allows us to load in our notes collected from db.json.
-app.get('/notes', (req, res) => {
-    res.sendFile(path.join(__dirname, './public/notes.html'));
-});
+
 // This route is more for everything else. Seeing that index.html only acts as a landing page, this will apply here.
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'));
