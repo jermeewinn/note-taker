@@ -13,20 +13,27 @@ app.use(express.urlencoded({ extended: true }));
 // This allows us to parse incoming JSON data
 app.use(express.json());
 
+
+// This route allows us to load in the index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './Develop/public/index.html'));
+});
+// This route allows us to load in our notes collected from db.json.
+app.get('/notes', (req, res) => {
+    res.sendFile(path.join(__dirname, './Develop/public/notes.html'));
+});
 // This route allows us to load in our notes from db.json
 app.get('/api/notes', (req, res) => {
     res.sendFile(path.join(__dirname, './Develop/db/db.json'));
 });
-// This route allows us to load in our notes collected from db.json.
-app.get('/notes', (req, res) => {
-    res.sendFile(path.join(__dirname, './public/notes.html'));
-});
+
 // This route reads ALL data coming from db.json
 app.get('/api/notes', (req, res) => {
     const data = fs.readFileSync('./Develop/db/db.json', 'utf8')
         res.send(data);
         console.log(data);
 });
+
 
 // This route allows user to create notes in db.json
 app.post('/api/notes', (req, res) => {
@@ -42,7 +49,8 @@ app.post('/api/notes', (req, res) => {
         fs.readFileSync('./Develop/db/db.json', 'utf8');
             const parsedNotes = JSON.parse(notes);
             parsedNotes.push(newNote);
-            fs.writeFileSync('./Develop/db/db.json', JSON.stringify(parsedNotes));
+            const noteString = JSON.stringify(parsedNotes)
+            fs.writeFileSync('./Develop/db/db.json', noteString);
         const response = {
             status: 'success',
             body: newNote,
@@ -60,7 +68,7 @@ app.delete('/'
 
 // This route is more for everything else. Seeing that index.html only acts as a landing page, this will apply here.
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, './public/index.html'));
+    res.sendFile(path.join(__dirname, './Develop/public/index.html'));
 });
 
 app.listen(PORT, () => {
