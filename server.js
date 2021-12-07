@@ -65,6 +65,28 @@ app.post('/api/notes', (req, res) => {
     }     
 });
 
+app.delete('/api/notes/:id', (req, res) => {
+    const noteId = req.params.id;
+    console.log("deleting note with ID", noteId);
+    readFileAsync('./Develop/db/db.json', 'utf8')
+        .then((notes) => {
+            notes = JSON.parse(notes)
+            console.log(notes);
+            for (let i = 0; i < notes.length; i++) {
+                const note = notes[i];
+                console.log("current note", note);
+                if(noteId == note.noteId) {
+                    notes.splice(i, 1);
+                    console.log("fixed notes", notes)
+                    writeFileAsync('./Develop/db/db.json', JSON.stringify(notes))
+                    .then((updatedNote) => {
+                    console.log("updated note", updatedNote);
+                    res.json(notes);
+            })
+                }                
+            }
+        })
+});
 
 // This route is more for everything else. Seeing that index.html only acts as a landing page, this will apply here.
 app.get('*', (req, res) => {
