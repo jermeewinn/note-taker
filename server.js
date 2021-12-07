@@ -46,7 +46,7 @@ app.post('/api/notes', (req, res) => {
         const newNote = {
             title,
             text,
-            noteId: uuid(),
+            id: uuid(),
         };
         console.log(newNote)
         readFileAsync('./Develop/db/db.json', 'utf8')
@@ -75,7 +75,7 @@ app.delete('/api/notes/:id', (req, res) => {
             for (let i = 0; i < notes.length; i++) {
                 const note = notes[i];
                 console.log("current note", note);
-                if(noteId == note.noteId) {
+                if(noteId == note.id) {
                     notes.splice(i, 1);
                     console.log("fixed notes", notes)
                     writeFileAsync('./Develop/db/db.json', JSON.stringify(notes))
@@ -84,7 +84,7 @@ app.delete('/api/notes/:id', (req, res) => {
                     res.json(notes);
                     })
                 }                
-            }
+            } 
         })
 });
 
