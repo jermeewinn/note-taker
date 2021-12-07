@@ -10,7 +10,7 @@ const readFileAsync = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
 // Navigate here in your browser to test the server: http://localhost:3001
 // This allows us to input CSS and Javascript files with index.html
-app.use(express.static('public'));
+app.use(express.static('Develop/public'));
 // This allows us to parse incoming string/array data
 app.use(express.urlencoded({ extended: true }));
 // This allows us to parse incoming JSON data
@@ -82,7 +82,7 @@ app.delete('/api/notes/:id', (req, res) => {
                     .then((updatedNote) => {
                     console.log("updated note", updatedNote);
                     res.json(notes);
-            })
+                    })
                 }                
             }
         })
