@@ -5,6 +5,9 @@ const { notes } = require('./Develop/db/db.json');
 const uuid = require('./helpers/uuid');
 const PORT = process.env.PORT || 3001;
 const app = express();
+const util = require('util');
+const readFileAsync = util.promisify(fs.readFile);
+const writeFileAsync = util.promisify(fs.writeFile);
 // Navigate here in your browser to test the server: http://localhost:3001
 // This allows us to input CSS and Javascript files with index.html
 app.use(express.static('public'));
@@ -37,7 +40,7 @@ app.get('/api/notes', (req, res) => {
 
 // This route allows user to create notes in db.json
 app.post('/api/notes', (req, res) => {
-    console.info(`${req.method} request received to add a note`);
+    console.info(`${req.body} request received to add a note`);
     const { title,text } = req.body;
     if (title && text) {
         const newNote = {
@@ -45,26 +48,23 @@ app.post('/api/notes', (req, res) => {
             text,
             noteId: uuid(),
         };
-
-        fs.readFileSync('./Develop/db/db.json', 'utf8');
+        console.log(newNote)
+        readFileAsync('./Develop/db/db.json', 'utf8')
+        .then((notes) => {
+            console.log("read file", notes)
             const parsedNotes = JSON.parse(notes);
             parsedNotes.push(newNote);
-            const noteString = JSON.stringify(parsedNotes)
-            fs.writeFileSync('./Develop/db/db.json', noteString);
-        const response = {
-            status: 'success',
-            body: newNote,
-        };
-        
-        console.log(response);
-        res.json(response);
+            writeFileAsync('./Develop/db/db.json', JSON.stringify(parsedNotes))
+            .then((updatedNote) => {
+                console.log("updated note", updatedNote);
+                res.json(parsedNotes);
+            })
+        });
     } else {
         res.json('Error in creating new note');
     }     
 });
-// This route allows user to delete notes in db.json
-app.delete('/'
-)
+
 
 // This route is more for everything else. Seeing that index.html only acts as a landing page, this will apply here.
 app.get('*', (req, res) => {
